@@ -1,9 +1,10 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using TodoAppv2.Komp;
+using Microsoft.EntityFrameworkCore;
 
-namespace TodoAppv2.Components
+namespace TodoAppv2.Komp
 {
     public class TaskQueryComponent
     {
@@ -27,14 +28,14 @@ namespace TodoAppv2.Components
 
             int pageSize = 10;
             int totalItems = await query.CountAsync();
-            TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+            TotalPages = (int)System.Math.Ceiling(totalItems / (double)pageSize);
             if (PageIndex < 1) PageIndex = 1;
             if (TotalPages > 0 && PageIndex > TotalPages) PageIndex = TotalPages;
 
             return await query.OrderBy(t => t.Id)
-                .Skip((PageIndex - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
+                              .Skip((PageIndex - 1) * pageSize)
+                              .Take(pageSize)
+                              .ToListAsync();
         }
     }
 }

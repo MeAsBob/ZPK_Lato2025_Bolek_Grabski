@@ -1,26 +1,41 @@
-﻿using System;
-using System.Text.Json;
+﻿using System.Threading.Tasks;
 using TodoAppv2.Komp;
+using Microsoft.EntityFrameworkCore;
 
-namespace TodoAppv2.Components
+namespace TodoAppv2.Komp
 {
-    public class TaskDataComponent
+    public class TaskManagerComponent
     {
-        private int id = -1;
-        private string name = "";
-        private DateTime deadline = DateTime.Today;
-        private int priority = 0;
-        private bool isDone = false;
+        private readonly TodoContext _context;
 
-        public TaskDataComponent() { }
+        public TaskManagerComponent(TodoContext context)
+        {
+            _context = context;
+        }
 
-        public int Id { get => id; set => id = value; }
-        public string Name { get => name; set => name = value; }
-        public DateTime Deadline { get => deadline; set => deadline = value; }
-        public int Priority { get => priority; set => priority = value; }
-        public bool IsDone { get => isDone; set => isDone = value; }
+        public async Task AddTaskAsync(TodoItem task)
+        {
+            task.IsDone = false;
+            _context.TodoItems.Add(task);
+            await _context.SaveChangesAsync();
+        }
 
-        public string ToJson() => JsonSerializer.Serialize(this);
-        public static TaskDataComponent FromJson(string json) => JsonSerializer.Deserialize<TaskDataComponent>(json);
+        public async Task<bool> CompleteTaskAsync(int id)
+        {
+            var task = await _context.TodoItems.FindAsync(id);
+            if (task == null) return false;
+            task.IsDone = true;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> DeleteTaskAsync(int id)
+        {
+            var task = await _context.TodoItems.FindAsync(id);
+            if (task == null) return false;
+            _context.TodoItems.Remove(task);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

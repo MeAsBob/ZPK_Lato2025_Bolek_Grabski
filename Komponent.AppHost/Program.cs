@@ -1,12 +1,31 @@
-using k8s.KubeConfigModels;
-using TodoAppv2.Components;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+using TodoAppv2.Komp; // <-- twoje komponenty i TodoContext
 
-private readonly TaskManagerComponent _taskManager;
-private readonly TaskQueryComponent _taskQuery;
+var builder = WebApplication.CreateBuilder(args);
 
-_taskManager = new TaskManagerComponent(_context);
-_taskQuery = new TaskQueryComponent();
+// 1. Dodaj Razor Pages
+builder.Services.AddRazorPages();
 
+// 2. Zarejestruj kontekst bazy danych (np. SQLite, SQL Server, InMemory, itd.)
+builder.Services.AddDbContext<TodoContext>(options =>
+    options.UseInMemoryDatabase("TodoMemoryDB"));
 
-Tasks = await _taskQuery.GetFilteredTasksAsync(_context);
-await _taskManager.AddTaskAsync(NewTask);
+var app = builder.Build();
+
+// 3. Middleware ASP.NET
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error");
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
+
+app.MapRazorPages(); // <-- to uruchamia /Pages
+
+app.Run();

@@ -1,0 +1,16 @@
+@page
+@model TodoAppv2.Komp.IndexModel
+
+<h1>Lista zadañ</h1>
+
+<form method="post" asp-page-handler="Add">
+    <input asp-for="NewTask.Name" />
+    <button type="submit">Dodaj</button>
+</form>
+
+<ul>
+    @foreach (var t in Model.Tasks)
+    {
+    <li>@t.Name - <form method="post" asp-page-handler="Delete" asp-route-id="@t.Id"><button>Usuñ</button></form></li>
+    }
+</ul>
