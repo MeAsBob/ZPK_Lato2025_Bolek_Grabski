@@ -1,12 +1,40 @@
-using k8s.KubeConfigModels;
+using System;
 using TodoAppv2.Components;
 
-private readonly TaskManagerComponent _taskManager;
-private readonly TaskQueryComponent _taskQuery;
+class Program
+{
+    static void Main(string[] args)
+    {
+        // Tworzymy jedno zadanie
+        var zadanie = new TodoItemComponent
+        {
+            Id = 1,
+            Title = "Napisz testowy kod",
+            Description = "SprawdŸ, czy komponenty dzia³aj¹",
+            IsCompleted = true
+        };
 
-_taskManager = new TaskManagerComponent(_context);
-_taskQuery = new TaskQueryComponent();
+        // Tworzymy listê i dodajemy zadanie
+        var lista = new TodoListComponent
+        {
+            Owner = "Adrian",
+            ListName = "Moje zadania"
+        };
 
+        lista.Add(zadanie);
 
-Tasks = await _taskQuery.GetFilteredTasksAsync(_context);
-await _taskManager.AddTaskAsync(NewTask);
+        // Generujemy statystyki
+        var statystyki = new StatsComponent();
+        statystyki.Generate(lista);
+
+        // Wyœwietlamy wszystko
+        Console.WriteLine("Zadanie:");
+        Console.WriteLine(zadanie.Summary());
+
+        Console.WriteLine("\nLista:");
+        Console.WriteLine($"Nazwa: {lista.ListName}, W³aœciciel: {lista.Owner}");
+
+        Console.WriteLine("\nStatystyki:");
+        Console.WriteLine(statystyki.Summary());
+    }
+}
