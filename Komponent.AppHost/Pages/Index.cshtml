@@ -1,0 +1,15 @@
+@page
+@model Komponent.AppHost.Pages.IndexModel
+
+
+<h2>Lista zadañ</h2>
+
+<ul>
+    @foreach (var item in Model.Lista.Items)
+    {
+        <li>@item.Title - @(item.IsCompleted ? "Zrobione" : "Otwarte")</li>
+    }
+</ul>
+
+<h3>Statystyki</h3>
+<p>@Model.Statystyki.Summary()</p>

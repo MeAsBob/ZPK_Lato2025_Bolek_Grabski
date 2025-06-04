@@ -1,40 +1,17 @@
-using System;
-using TodoAppv2.Components;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
-class Program
-{
-    static void Main(string[] args)
-    {
-        // Tworzymy jedno zadanie
-        var zadanie = new TodoItemComponent
-        {
-            Id = 1,
-            Title = "Napisz testowy kod",
-            Description = "SprawdŸ, czy komponenty dzia³aj¹",
-            IsCompleted = true
-        };
+var builder = WebApplication.CreateBuilder(args);
 
-        // Tworzymy listê i dodajemy zadanie
-        var lista = new TodoListComponent
-        {
-            Owner = "Adrian",
-            ListName = "Moje zadania"
-        };
+builder.Services.AddRazorPages();
 
-        lista.Add(zadanie);
+var app = builder.Build();
 
-        // Generujemy statystyki
-        var statystyki = new StatsComponent();
-        statystyki.Generate(lista);
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
 
-        // Wyœwietlamy wszystko
-        Console.WriteLine("Zadanie:");
-        Console.WriteLine(zadanie.Summary());
+app.MapRazorPages(); // TO JEST KLUCZOWE
 
-        Console.WriteLine("\nLista:");
-        Console.WriteLine($"Nazwa: {lista.ListName}, W³aœciciel: {lista.Owner}");
-
-        Console.WriteLine("\nStatystyki:");
-        Console.WriteLine(statystyki.Summary());
-    }
-}
+app.Run();
